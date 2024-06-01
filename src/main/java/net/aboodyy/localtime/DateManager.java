@@ -53,48 +53,6 @@ public class DateManager implements Listener {
         return dateFormat.format(date);
     }
 
-    public String getTimeZone(Player player) {
-        final String FAILED = "[LocalTime] Couldn't get " + player.getName() + "'s timezone. Will use default timezone.";
-        String timezone = TimeZone.getDefault().getID();
-
-        if (timezones.containsKey(player.getUniqueId()))
-            return timezones.get(player.getUniqueId());
-
-        InetSocketAddress address = player.getAddress();
-        timezones.put(player.getUniqueId(), timezone);
-
-        if (address == null) {
-            Bukkit.getLogger().info(FAILED);
-            return timezone;
-        }
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                String timezone;
-
-                try {
-                    URL api = new URL("https://ipapi.co/" + address.getAddress().getHostAddress() + "/timezone/");
-                    URLConnection connection = api.openConnection();
-
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    timezone = bufferedReader.readLine();
-                } catch (Exception e) {
-                    timezone = "undefined";
-                }
-
-                if (timezone.equalsIgnoreCase("undefined")) {
-                    Bukkit.getLogger().info(FAILED);
-                    timezone = TimeZone.getDefault().getID();
-                }
-
-                timezones.put(player.getUniqueId(), timezone);
-            }
-        }.runTaskAsynchronously(PlaceholderAPIPlugin.getInstance());
-
-        return timezones.get(player.getUniqueId());
-    }
-
     public void clear() {
         timezones.clear();
     }
