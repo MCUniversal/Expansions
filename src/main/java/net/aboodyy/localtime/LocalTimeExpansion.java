@@ -30,6 +30,7 @@ import org.bukkit.event.HandlerList;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 @SuppressWarnings("unused")
 public class LocalTimeExpansion extends PlaceholderExpansion implements Cacheable, Configurable {
@@ -73,16 +74,16 @@ public class LocalTimeExpansion extends PlaceholderExpansion implements Cacheabl
 
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
-        if (p == null) return null;
+        String format = this.getString("date_format", "dd/MM/yyyy hh:mma");
 
         String[] args;
-        String format = this.getString("date_format", "dd/MM/yyyy hh:mma");
+        String timezone = TimeZone.getDefault().getID();
 
         if (identifier.startsWith("time_")) {
             args = identifier.split("time_");
             if (args.length < 2) return null;
 
-            return dateManager.getDate(args[1], dateManager.getTimeZone(p));
+            return dateManager.getDate(args[1], timezone);
         }
 
         if (identifier.startsWith("timezone_")) {
@@ -100,7 +101,7 @@ public class LocalTimeExpansion extends PlaceholderExpansion implements Cacheabl
         }
 
         if (identifier.equalsIgnoreCase("time"))
-            return dateManager.getDate(format, dateManager.getTimeZone(p));
+            return dateManager.getDate(format, timezone);
 
         return null;
     }
