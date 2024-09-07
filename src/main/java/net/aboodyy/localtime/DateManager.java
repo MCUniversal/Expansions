@@ -22,6 +22,9 @@ package net.aboodyy.localtime;
 
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,6 +32,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
@@ -39,8 +44,11 @@ import java.util.*;
 public class DateManager implements Listener {
 
     private final Map<UUID, String> timezones;
+    private File configFile;
+    private FileConfiguration config;
 
     DateManager() {
+        loadConfig();
         timezones = new HashMap<>();
     }
 
@@ -61,5 +69,31 @@ public class DateManager implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent e) {
         timezones.remove(e.getPlayer().getUniqueId());
+    }
+
+    public void loadConfig() {
+        File serverRootDir = Bukkit.getWorldContainer();
+
+        File gameManagerDir = new File(serverRootDir, "GameManager");
+        if (!gameManagerDir.exists()) {
+            gameManagerDir.mkdir();
+        }
+
+        configFile = new File(gameManagerDir, "config.yml");
+
+        if (!configFile.exists()) {
+            try {
+                configFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        config = YamlConfiguration.loadConfiguration(configFile);
+
+    }
+
+    public Configuration getConfig() {
+        return config;
     }
 }

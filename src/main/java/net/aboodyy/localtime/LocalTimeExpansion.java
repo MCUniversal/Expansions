@@ -39,17 +39,17 @@ public class LocalTimeExpansion extends PlaceholderExpansion implements Cacheabl
 
     @Override
     public String getIdentifier() {
-        return "localtime";
+        return "lab";
     }
 
     @Override
     public String getAuthor() {
-        return "aBooDyy";
+        return "hetmastertje";
     }
 
     @Override
     public String getVersion() {
-        return "1.2";
+        return "1.0";
     }
 
     @Override
@@ -74,34 +74,14 @@ public class LocalTimeExpansion extends PlaceholderExpansion implements Cacheabl
 
     @Override
     public String onPlaceholderRequest(Player p, String identifier) {
-        String format = this.getString("date_format", "dd/MM/yyyy hh:mma");
+        if (identifier.equalsIgnoreCase("formatUUID"))
+            return dateManager.getConfig().getString("server.formatUUID");
 
-        String[] args;
-        String timezone = TimeZone.getDefault().getID();
+        else if (identifier.equalsIgnoreCase("uuid"))
+            return dateManager.getConfig().getString("server.uuid");
 
-        if (identifier.startsWith("time_")) {
-            args = identifier.split("time_");
-            if (args.length < 2) return null;
-
-            return dateManager.getDate(args[1], timezone);
-        }
-
-        if (identifier.startsWith("timezone_")) {
-            if (identifier.contains(",")) {
-                args = identifier.replace("timezone_", "").split(",", 2);
-                if (args.length != 2) return null;
-
-                return dateManager.getDate(args[1], args[0]);
-            }
-
-            args = identifier.split("timezone_");
-            if (args.length < 2) return null;
-
-            return dateManager.getDate(format, args[1]);
-        }
-
-        if (identifier.equalsIgnoreCase("time"))
-            return dateManager.getDate(format, timezone);
+        else if (identifier.equalsIgnoreCase("hot"))
+            return dateManager.getConfig().getString("server.uuid");
 
         return null;
     }
