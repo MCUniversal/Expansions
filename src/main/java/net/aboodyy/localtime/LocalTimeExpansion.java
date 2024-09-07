@@ -80,9 +80,6 @@ public class LocalTimeExpansion extends PlaceholderExpansion implements Cacheabl
         else if (identifier.equalsIgnoreCase("uuid"))
             return dateManager.getConfig().getString("server.uuid");
 
-        else if (identifier.equalsIgnoreCase("hot"))
-            return dateManager.getConfig().getString("server.uuid");
-
         return null;
     }
 }
